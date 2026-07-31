@@ -4,14 +4,22 @@ const cors = require("cors")
 
 const app = express()
 
+const allowedOrigins = [
+    "http://localhost:5173",
+    "https://gen-ai-report-project.vercel.app",
+    process.env.FRONTEND_URL
+].filter(Boolean)
+
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors({
-        origin: [
-        "http://localhost:5173",
-        "https://YOUR-VERCEL-DOMAIN.vercel.app"
-    ],
-    
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            return callback(null, true)
+        }
+
+        return callback(null, false)
+    },
     credentials: true
 }))
 
